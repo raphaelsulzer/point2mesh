@@ -1,6 +1,9 @@
 import torch
 import numpy as np
 from queue import Queue
+
+import trimesh
+
 from utils import load_obj, export
 import copy
 from pathlib import Path
@@ -21,7 +24,12 @@ class Mesh:
             self.vs, self.faces = vs.cpu().numpy(), faces.cpu().numpy()
             self.scale, self.translations = 1.0, np.zeros(3,)
         else:
-            self.vs, self.faces = load_obj(file)
+            if(file.endswith('.obj')):
+                self.vs, self.faces = load_obj(file)
+            else:
+                mesh=trimesh.load(file)
+                self.vs = np.array(mesh.vertices)
+                self.faces = np.array(mesh.faces)
             self.normalize_unit_bb()
         self.vs_in = copy.deepcopy(self.vs)
         self.v_mask = np.ones(len(self.vs), dtype=bool)

@@ -5,9 +5,19 @@ import pathlib
 from utils import *
 import warnings
 
+import sys
+sys.path.append(os.path.join(os.path.dirname(__file__),"..","..","..","benchmark","datasets"))
+from modelnet10 import ModelNet10
+from shapenet import ShapeNet
+from berger import Berger
+
 
 def run(args):
-    xyz, _ = read_pts(args.i)
+    # xyz, _ = read_pts(args.i)
+
+    xyz = trimesh.load(args.i).vertices
+
+
 
     m = trimesh.convex.convex_hull(xyz[:, :3])
     vs, faces = m.vertices, m.faces
@@ -79,15 +89,15 @@ def blender_rehull(target: Path, dest: Path, res: int, blender_path: Path):
 if __name__ == '__main__':
     base_path = os.path.dirname(os.path.abspath(__file__))
     parser = argparse.ArgumentParser(description='Convex hull maker')
-    parser.add_argument('--i', type=Path, required=True,
+    parser.add_argument('--i', type=Path, required=False,
                         help='path to read .xyz/.npts or .ply from')
-    parser.add_argument('--faces', type=int, required=True, help='#target of faces for the convex hull')
+    parser.add_argument('--faces', type=int, required=False, default=10000, help='#target of faces for the convex hull')
 
     parser.add_argument('--o', type=str, required=False,
                         help='path to output convex hull obj to', default='')
-    parser.add_argument('--manifold-path', type=Path, required=False,
+    parser.add_argument('--manifold_path', type=Path, required=False,
                         help='path to build folder containing manifold and simplify software')
-    parser.add_argument('--manifold-res', type=int, default=5000, required=False,
+    parser.add_argument('--manifold_res', type=int, default=5000, required=False,
                         help='resolution for Manifold software')
     parser.add_argument('--blender', action='store_true')
     parser.add_argument('--blender-res', type=int, default=5, required=False,
@@ -95,5 +105,19 @@ if __name__ == '__main__':
     parser.add_argument('--blender-path', type=Path, required=False, help='path to folder containing blender')
 
     args = parser.parse_args()
-    check_args(args)
-    run(args)
+    # check_args(args)
+
+    dataset = Berger()
+    models = dataset.getModels(type="berger")
+    outpath = "/mnt/raphael/reconbench/p2m/convex_hull/"
+
+    args.manifold_path = r'~/remote_python/Manifold/build'
+    args.blender = False
+
+    for m in models:
+
+        args.i = m["scan_ply"]
+        args.o = os.path.join(outpath,m["class"])
+        os.makedirs(args.o,exist_ok=True)
+        args.o = os.path.join(outpath,m["class"],m["model"]+".obj")
+        run(args)

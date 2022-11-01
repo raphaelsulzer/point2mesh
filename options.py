@@ -3,7 +3,7 @@ import os
 import numpy as np
 import torch
 
-MANIFOLD_DIR = r'~/code/Manifold/build'  # path to manifold software (https://github.com/hjwdzh/Manifold)
+MANIFOLD_DIR = "/home/raphael/remote_python/Manifold/build"  # path to manifold software (https://github.com/hjwdzh/Manifold)
 
 
 class Options:
@@ -21,7 +21,7 @@ class Options:
         parser.add_argument('--samples', type=int, metavar='N', default=25000,
                             help='number of points to sample reconstruction with')
         parser.add_argument('--begin-samples', type=int, metavar='N', default=15000, help='num pts to start with')
-        parser.add_argument('--iterations', type=int, metavar='N', default=10000, help='number of iterations to do')
+        parser.add_argument('--iterations', type=int, metavar='N', default=3000, help='number of iterations to do')
         parser.add_argument('--upsamp', type=int, metavar='N', default=1000, help='upsample each {upsamp} iteration')
         parser.add_argument('--max-faces', type=int, metavar='N', default=10000,
                             help='maximum number of faces to upsample to')
