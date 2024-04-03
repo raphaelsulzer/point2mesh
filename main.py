@@ -15,6 +15,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__),"..","benchmark","dataset
 from modelnet10 import ModelNet10
 from shapenet import ShapeNet
 from berger import Berger
+from real import Real
 
 import open3d as o3d
 
@@ -122,15 +123,15 @@ def main(input_pc,input_mesh,outpath,filename):
 
 if __name__ == '__main__':
 
-    dataset = Berger()
-    models = dataset.getModels(scan_conf=["mvs4"])
+    dataset = Real(classes=["50000"])
+    models = dataset.getModels(hint="temple")
 
     for m in models:
         try:
             input_pc = m["scan_ply"]
-            input_mesh = m["poisson_6"]
+            input_mesh = m["poisson"]
             # TODO make a poisson_6 of the MVS scan of Berger
-            outpath = os.path.join("/mnt/raphael/reconbench_out/p2m/poisson",m["class"],m["model"])
+            outpath = os.path.join(dataset.outpath,"p2m",m["class"],m["model"])
             os.makedirs(outpath,exist_ok=True)
             main(input_pc,input_mesh,outpath,m["model"]+".ply")
         except Exception as e:

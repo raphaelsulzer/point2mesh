@@ -35,7 +35,7 @@ class Options:
         parser.add_argument('--leaky-relu', type=float, metavar='1eN', default=0.01, help='slope for leaky relu')
         parser.add_argument('--local-non-uniform', type=float, metavar='1eN', default=0.1,
                             help='weight of local non uniform loss')
-        parser.add_argument('--gpu', type=int, metavar='N', default=0, help='gpu to use')
+        parser.add_argument('--gpu', type=int, metavar='N', default=1, help='gpu to use')
         parser.add_argument('--convs', nargs='+', default=[16, 32, 64, 64, 128], type=int, help='convs to do')
         parser.add_argument('--pools', nargs='+', default=[0.0, 0.0, 0.0, 0.0], type=float,
                             help='percent to pool from original resolution in each layer')
